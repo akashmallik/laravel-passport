@@ -18,26 +18,15 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
-  // login(data) {
-  //   return this.http.post(this.baseApi, data);
-  // }
-
-
   login(data): Observable<boolean> {
     return this.http.post<any>(this.baseApi, data)
       .pipe(
         tap(token => this.storeToken(token)),
         mapTo(true),
         catchError(error => {
-          console.log(error);
           return of(false);
-        }));
-  }
-
-  private storeToken(token) {
-    console.log(token);
-    localStorage.setItem('access_token', token.access_token);
-    localStorage.setItem('refresh_token', token.refresh_token);
+        })
+      );
   }
 
   refreshToken() {
@@ -46,24 +35,16 @@ export class AuthService {
       'client_id': 2,
       'client_secret': 'GmGrfvNcNsoSUjHkiYPN5rxMxcCVQNuheorFnu7R',
       'refresh_token': this.getRefreshToken()
-    }).pipe(tap((token: any) => {
-      console.log(token);
-      localStorage.setItem('access_token', token.access_token);
-      localStorage.setItem('refresh_token', token.refresh_token);
-    }));
+    }).pipe(tap((token: any) => this.storeToken(token)));
   }
 
   logout() {
     return this.http.post<any>('http://127.0.0.1:8000/api/logout', {
       'refreshToken': this.getRefreshToken()
     }).pipe(
-      tap(() => {
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-      }),
+      tap(() => this.removeToken()),
       mapTo(true),
       catchError(error => {
-        alert(error.error);
         return of(false);
       }));
   }
@@ -75,8 +56,19 @@ export class AuthService {
   getJwtToken() {
     return localStorage.getItem('access_token');
   }
+
   getRefreshToken() {
     return localStorage.getItem('refresh_token');
+  }
+
+  private storeToken(token) {
+    localStorage.setItem('access_token', token.access_token);
+    localStorage.setItem('refresh_token', token.refresh_token);
+  }
+
+  private removeToken() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   }
 
   getUserInfo() {

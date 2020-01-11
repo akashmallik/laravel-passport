@@ -8,7 +8,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class WelcomeComponent implements OnInit {
 
-  user = {
+  user: any = {
     name: null,
   };
 
@@ -17,7 +17,6 @@ export class WelcomeComponent implements OnInit {
   ngOnInit() {
     this.autService.getUserInfo().subscribe(
       respose => {
-        console.log(respose);
         this.user = respose;
       },
       error => console.log(error)

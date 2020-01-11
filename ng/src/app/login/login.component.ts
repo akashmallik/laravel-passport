@@ -19,8 +19,8 @@ export class LoginComponent implements OnInit {
     this.formData.append('grant_type', 'password');
     this.formData.append('client_id', '2');
     this.formData.append('client_secret', 'GmGrfvNcNsoSUjHkiYPN5rxMxcCVQNuheorFnu7R');
-    this.formData.append('username', 'toakashmallik@gmail.com');
-    this.formData.append('password', 'admin@123');
+    this.formData.append('username', value.username);
+    this.formData.append('password', value.password);
 
     this.authService.login(this.formData).subscribe(
       reponse => {
